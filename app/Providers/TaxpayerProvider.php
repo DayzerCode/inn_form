@@ -20,7 +20,7 @@ class TaxpayerProvider extends ServiceProvider
     {
         $httpClient = new Client([
             'headers' => ['Content-Type' => 'application/json'],
-            'base_uri' => 'https://statusnpd.nalog.ru/api/v1/',
+            'base_uri' => config('taxpayer_api.url'),
         ]);
         $this->app->bind(TaxpayerApi::class, function () use ($httpClient) {
             return new StatusNpdApi($httpClient, $this->app['log']);
