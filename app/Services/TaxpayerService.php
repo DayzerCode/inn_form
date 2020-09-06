@@ -28,23 +28,31 @@ class TaxpayerService implements TaxpayerServiceContract
     {
         try {
             if ($this->cacheManager->has($inn)) {
-                return $this->result($this->cacheManager->get($inn), 'success');
+                return $this->result($this->cacheManager->get($inn));
             } else {
                 $response = $this->api->getStatusInn($inn);
                 $this->cacheManager->set($inn, $response['message'], self::CACHE_TTL);
-                return $this->result($response['message'], 'success');
+                return $this->result($response['message']);
             }
-        } catch (InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             $this->logManager->error($e->getMessage(), ['line' => $e->getLine(), 'file' => $e->getFile()]);
         }
-        return $this->result('Произошла ошибка получения данных');
+        return $this->error('Произошла ошибка получения данных');
     }
 
-    private function result(string $message, string $status = 'error') : array
+    private function result(string $message) : array
     {
         return [
-            'status' => $status,
+            'status' => 'success',
             'message' => $message,
+        ];
+    }
+
+    private function error(string $message) : array
+    {
+        return [
+            'status' => 'error',
+            'errors' => [[$message]],
         ];
     }
 }

@@ -23,7 +23,13 @@ class StatusNpdApi implements TaxpayerApi
         $this->logManager = $logManager;
     }
 
-    public function getStatusInn(string $inn, DateTimeInterface $date = null) : array
+    /**
+     * @param string $inn
+     * @param DateTimeInterface|null $date
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getStatusInn(string $inn, DateTimeInterface $date = null): array
     {
         if ($date === null) {
             $date = new \DateTime();
@@ -32,13 +38,10 @@ class StatusNpdApi implements TaxpayerApi
             'inn' => $inn,
             'requestDate' => $date->format('Y-m-d'),
         ];
-        try {
-            $response = $this->client->request('POST', 'tracker/taxpayer_status', [
-                'body' => \json_encode($parameters, true)
-            ]);
-        } catch (GuzzleException $e) {
-            $this->logManager->error($e->getMessage(), ['line' => $e->getLine(), 'file' => $e->getFile()]);
-        }
+
+        $response = $this->client->request('POST', '/api/v1/tracker/taxpayer_status/', [
+            'body' => \json_encode($parameters, true)
+        ]);
         return \json_decode($response->getBody()->getContents(), true);
     }
 }
