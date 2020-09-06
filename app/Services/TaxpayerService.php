@@ -8,7 +8,6 @@ use App\Contracts\Services\Api\TaxpayerApi;
 use App\Contracts\Services\TaxpayerServiceContract;
 use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class TaxpayerService implements TaxpayerServiceContract
 {
